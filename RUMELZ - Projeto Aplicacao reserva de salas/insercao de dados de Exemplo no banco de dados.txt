@@ -1,0 +1,29 @@
+-- Usuários
+INSERT INTO usuarios (nome, email, senha_hash, tipo)
+VALUES
+('Ana Lima', 'ana@exemplo.com', 'hash1', 'comum'),
+('Carlos Silva', 'carlos@exemplo.com', 'hash2', 'admin');
+
+-- Tipos de sala
+INSERT INTO tipos_sala (nome)
+VALUES
+('comum'),
+('auditório'),
+('laboratório'),
+('reunião');
+
+-- Salas
+INSERT INTO salas (nome, tipo_sala_id, permite_reserva_direta, status)
+VALUES
+('Sala 101', 1, TRUE, 'disponivel'),
+('Auditório Central', 2, FALSE, 'disponivel'),
+('Lab de Informática', 3, FALSE, 'manutencao'),
+('Sala de Reunião 1', 4, TRUE, 'disponivel');
+
+-- Reservas
+INSERT INTO reservas (id_usuario, id_sala, data, turno, status_reserva, observacoes)
+VALUES
+(1, 1, '2025-07-03', 1, 2, 'Aula de reforço'),
+(1, 2, '2025-07-05', 2, 1, 'Solicitação de evento'),
+(2, 3, '2025-07-06', 3, 3, 'Negado por manutenção');
+

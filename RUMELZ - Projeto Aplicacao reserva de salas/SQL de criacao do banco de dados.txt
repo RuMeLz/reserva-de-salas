@@ -1,0 +1,34 @@
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha_hash VARCHAR(255) NOT NULL,
+    tipo ENUM('comum', 'admin') NOT NULL DEFAULT 'comum'
+);
+
+CREATE TABLE tipos_sala (
+    id_tipo INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE salas (
+    id_sala INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo_sala_id INT NOT NULL,
+    permite_reserva_direta BOOLEAN DEFAULT TRUE,
+    status ENUM('disponivel', 'manutencao', 'indisponivel') DEFAULT 'disponivel',
+    FOREIGN KEY (tipo_sala_id) REFERENCES tipos_sala(id_tipo)
+);
+
+CREATE TABLE reservas (
+    id_reserva INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_sala INT NOT NULL,
+    data DATE NOT NULL,
+    turno INT NOT NULL,               -- 1 = manhã, 2 = tarde, 3 = noite
+    status_reserva INT NOT NULL,      -- 1 = pendente, 2 = aprovada, 3 = rejeitada
+    data_solicitacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    observacoes TEXT,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_sala) REFERENCES salas(id_sala)
+);
