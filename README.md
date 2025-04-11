@@ -1,2 +1,5 @@
 # reserva-de-salas
-proejto de aplicação de reserva de salas feito durante minhas aulas EEEPE
+projeto de aplicação de reserva de salas feito durante minhas aulas EEEPE
+Linguagens usadas: 
+  -SQL
+  ...
