@@ -3,7 +3,7 @@ session_start();
 require '../conexao.php';
 
 // Verifica se o usuário é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['tipo'] !== 'admin') {
+if (!isset($_SESSION['id_usuario']) || $_SESSION['tipo'] !== 'admin') {
     header("Location: ../login.php");
     exit;
 }
@@ -18,14 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ativo = 1; // Usuário será ativo por padrão
 
     // Verifica se já existe um usuário com esse e-mail
-    $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT id_usuario FROM usuarios WHERE email = :email");
     $stmt->execute([':email' => $email]);
 
     if ($stmt->fetch()) {
         $mensagem = "Já existe um usuário com este e-mail.";
     } else {
         // Insere o novo usuário
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, tipo, ativo) VALUES (:nome, :email, :senha, :tipo, :ativo)");
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha_hash, tipo, ativo) VALUES (:nome, :email, :senha, :tipo, :ativo)");
         $stmt->execute([
             ':nome' => $nome,
             ':email' => $email,
@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Cadastrar Novo Usuário</title>
+	<link href="../style.css" rel="stylesheet">
 </head>
 <body>
     <h2>Cadastrar Novo Usuário</h2>
@@ -69,5 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <p><a href="painel.php">Voltar ao Painel Administrativo</a></p>
+	<script src="../script.js"></script>
 </body>
 </html>
