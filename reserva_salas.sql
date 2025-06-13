@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 13/06/2025 às 02:18
+-- Tempo de geração: 13/06/2025 às 02:36
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -20,6 +20,41 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `reserva_salas`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `reservas`
+--
+
+CREATE TABLE `reservas` (
+  `id_reserva` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `id_sala` int(11) NOT NULL,
+  `data` date NOT NULL,
+  `turno` int(11) NOT NULL,
+  `nome_turno` varchar(20) DEFAULT NULL,
+  `status_reserva` int(11) NOT NULL,
+  `data_solicitacao` datetime DEFAULT current_timestamp(),
+  `observacoes` text DEFAULT NULL,
+  `cancelada` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `reservas`
+--
+
+INSERT INTO `reservas` (`id_reserva`, `id_usuario`, `id_sala`, `data`, `turno`, `nome_turno`, `status_reserva`, `data_solicitacao`, `observacoes`, `cancelada`) VALUES
+(1, 1, 1, '2025-07-03', 1, 'Manhã', 2, '2025-05-08 19:47:44', 'Aula de reforço', 0),
+(2, 1, 2, '2025-07-05', 2, 'Tarde', 1, '2025-05-08 19:47:44', 'Solicitação de evento', 0),
+(3, 2, 3, '2025-07-06', 3, 'Noite', 3, '2025-05-08 19:47:44', 'Negado por manutenção', 0),
+(7, 1, 4, '2025-07-07', 1, 'Manhã', 2, '2025-05-30 20:53:04', NULL, 0),
+(8, 1, 2, '2025-06-03', 2, 'Tarde', 2, '2025-06-02 19:39:34', NULL, 0),
+(9, 1, 2, '2025-06-03', 1, 'Manhã', 3, '2025-06-02 20:04:13', 'isso não deveria acontecer', 1),
+(10, 1, 1, '2025-06-03', 1, 'Manhã', 3, '2025-06-02 20:05:30', 'isso não deveria acontecer parte 2\r\n', 1),
+(11, 1, 2, '2025-06-03', 3, 'Noite', 3, '2025-06-02 20:06:18', 'isso não deveria acontecer parte 3\r\n', 1),
+(12, 1, 2, '2025-06-04', 1, 'Manhã', 3, '2025-06-02 20:07:57', 'isso não deveria acontecer parte 4', 1),
+(13, 2, 3, '2025-06-06', 2, 'Tarde', 3, '2025-06-05 20:14:07', 'oioio', 1);
 
 -- --------------------------------------------------------
 
@@ -45,9 +80,62 @@ INSERT INTO `salas` (`id_sala`, `nome`, `tipo_sala_id`, `permite_reserva_direta`
 (3, 'Lab de Informática', 3, 0, 'manutencao'),
 (4, 'Sala de Reunião 1', 4, 1, 'disponivel');
 
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `tipos_sala`
+--
+
+CREATE TABLE `tipos_sala` (
+  `id_tipo` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `tipos_sala`
+--
+
+INSERT INTO `tipos_sala` (`id_tipo`, `nome`) VALUES
+(1, 'comum'),
+(2, 'auditório'),
+(3, 'laboratório'),
+(4, 'reunião');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `senha_hash` varchar(255) NOT NULL,
+  `tipo` enum('comum','admin') NOT NULL DEFAULT 'comum',
+  `ativo` tinyint(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `nome`, `email`, `senha_hash`, `tipo`, `ativo`) VALUES
+(1, 'Ana Lima', 'ana@exemplo.com', '$2y$10$69a4s0M3oqAoHhAagtHB6egNlm8vMgd5qC0LchEypQYAxLAEZI.Pi', 'comum', 1),
+(2, 'Carlos Silva', 'carlos@exemplo.com', '$2y$10$SEiRcI.FYZfILtF/IQus..sJzvJA.Oh4TSrKoX9nITkE7gmKniHc6', 'admin', 1),
+(5, 'fulano', 'fulano@exemplo', '$2y$10$rfSwkzVol1c6VSbuQ/Wj5.Ub//LwXtVshzAh3H.Yd/lNp7DO8PogW', 'admin', 1);
+
 --
 -- Índices para tabelas despejadas
 --
+
+--
+-- Índices de tabela `reservas`
+--
+ALTER TABLE `reservas`
+  ADD PRIMARY KEY (`id_reserva`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_sala` (`id_sala`);
 
 --
 -- Índices de tabela `salas`
@@ -57,8 +145,27 @@ ALTER TABLE `salas`
   ADD KEY `tipo_sala_id` (`tipo_sala_id`);
 
 --
+-- Índices de tabela `tipos_sala`
+--
+ALTER TABLE `tipos_sala`
+  ADD PRIMARY KEY (`id_tipo`);
+
+--
+-- Índices de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- AUTO_INCREMENT para tabelas despejadas
 --
+
+--
+-- AUTO_INCREMENT de tabela `reservas`
+--
+ALTER TABLE `reservas`
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `salas`
@@ -67,8 +174,27 @@ ALTER TABLE `salas`
   MODIFY `id_sala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT de tabela `tipos_sala`
+--
+ALTER TABLE `tipos_sala`
+  MODIFY `id_tipo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- Restrições para tabelas despejadas
 --
+
+--
+-- Restrições para tabelas `reservas`
+--
+ALTER TABLE `reservas`
+  ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`),
+  ADD CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`id_sala`) REFERENCES `salas` (`id_sala`);
 
 --
 -- Restrições para tabelas `salas`
