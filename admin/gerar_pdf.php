@@ -1,6 +1,6 @@
 <?php
 require '../conexao.php';
-require '../../dompdf/dompdf-3.1.0/dompdf/autoload.inc.php'; // ajuste o caminho se necessário
+require '../dompdf/dompdf-3.1.0/dompdf/autoload.inc.php'; // ajuste o caminho se necessário
 
 use Dompdf\Dompdf;
 
